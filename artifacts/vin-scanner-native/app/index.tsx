@@ -1,10 +1,44 @@
+import * as ImagePicker from 'expo-image-picker';
+import { router } from 'expo-router';
 import {
+  Alert,
   SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+
+async function openGallery() {
+  let permission;
+  try {
+    permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  } catch {
+    Alert.alert('', 'تعذر اختيار الصورة');
+    return;
+  }
+
+  if (permission.status !== 'granted') {
+    Alert.alert('', 'يجب السماح بالوصول إلى الصور لاختيار صورة');
+    return;
+  }
+
+  try {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      allowsMultipleSelection: false,
+      quality: 1,
+    });
+
+    if (result.canceled) return;
+
+    const uri = result.assets[0].uri;
+    router.push({ pathname: '/preview', params: { uri } });
+  } catch {
+    Alert.alert('', 'تعذر اختيار الصورة');
+  }
+}
 
 export default function HomeScreen() {
   return (
@@ -22,7 +56,11 @@ export default function HomeScreen() {
             <Text style={styles.primaryButtonText}>التقاط صورة</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.secondaryButton} activeOpacity={0.8}>
+          <TouchableOpacity
+            style={styles.secondaryButton}
+            activeOpacity={0.8}
+            onPress={openGallery}
+          >
             <Text style={styles.secondaryButtonText}>
               اختيار صورة من المعرض
             </Text>
