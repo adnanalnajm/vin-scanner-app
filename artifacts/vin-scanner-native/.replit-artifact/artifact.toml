@@ -1,0 +1,23 @@
+kind = "mobile"
+previewPath = "/"
+title = "VIN Scanner Native"
+version = "1.0.0"
+id = "artifacts/vin-scanner-native"
+router = "expo-domain"
+
+[[services]]
+name = "expo"
+ensurePreviewReachable = "/status"
+paths = [ "/" ]
+localPort = 24492
+
+[services.development]
+run = "pnpm --filter @workspace/vin-scanner-native run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/vin-scanner-native", "run", "build" ]
+run = [ "pnpm", "--filter", "@workspace/vin-scanner-native", "run", "serve" ]
+
+[services.env]
+PORT = "24492"
+BASE_PATH = "/"
