@@ -1,5 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import {
+  Alert,
   Image,
   StyleSheet,
   Text,
@@ -12,14 +13,24 @@ export default function PreviewScreen() {
   const { uri } = useLocalSearchParams<{ uri: string }>();
   const imageUri = Array.isArray(uri) ? uri[0] : uri;
 
+  function handleUseImage() {
+    Alert.alert('', 'سيتم استخراج رقم الشاصي في الخطوة القادمة');
+  }
+
+  function handlePickAnother() {
+    router.back();
+  }
+
   return (
     <SafeAreaView style={styles.safe}>
+      {/* Back button */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Text style={styles.backText}>رجوع</Text>
         </TouchableOpacity>
       </View>
 
+      {/* Image or missing-URI message */}
       <View style={styles.imageContainer}>
         {imageUri ? (
           <Image
@@ -27,7 +38,30 @@ export default function PreviewScreen() {
             style={styles.image}
             resizeMode="contain"
           />
-        ) : null}
+        ) : (
+          <View style={styles.noImageContainer}>
+            <Text style={styles.noImageText}>لا توجد صورة للمعاينة</Text>
+          </View>
+        )}
+      </View>
+
+      {/* Action buttons */}
+      <View style={styles.buttons}>
+        <TouchableOpacity
+          style={styles.primaryButton}
+          activeOpacity={0.8}
+          onPress={handleUseImage}
+        >
+          <Text style={styles.primaryButtonText}>استخدام هذه الصورة</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.secondaryButton}
+          activeOpacity={0.8}
+          onPress={handlePickAnother}
+        >
+          <Text style={styles.secondaryButtonText}>اختيار صورة أخرى</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -61,5 +95,47 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     width: '100%',
+  },
+  noImageContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  noImageText: {
+    color: '#aaa',
+    fontSize: 16,
+    writingDirection: 'rtl',
+    textAlign: 'center',
+  },
+  buttons: {
+    paddingHorizontal: 24,
+    paddingVertical: 20,
+    gap: 12,
+  },
+  primaryButton: {
+    backgroundColor: '#2563EB',
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  primaryButtonText: {
+    color: '#fff',
+    fontSize: 17,
+    fontWeight: '600',
+    writingDirection: 'rtl',
+  },
+  secondaryButton: {
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+  },
+  secondaryButtonText: {
+    color: '#fff',
+    fontSize: 17,
+    fontWeight: '600',
+    writingDirection: 'rtl',
   },
 });
