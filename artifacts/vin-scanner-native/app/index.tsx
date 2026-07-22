@@ -1,188 +1,95 @@
-import React from 'react';
 import {
-  Platform,
-  Pressable,
+  SafeAreaView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useColors } from '@/hooks/useColors';
 
 export default function HomeScreen() {
-  const insets = useSafeAreaInsets();
-  const colors = useColors();
-
-  const topPad =
-    Platform.OS === 'web' ? 67 : insets.top;
-  const bottomPad =
-    Platform.OS === 'web' ? 34 : insets.bottom;
-
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          backgroundColor: colors.background,
-          paddingTop: topPad,
-          paddingBottom: bottomPad + 24,
-        },
-      ]}
-    >
-      {/* Logo / icon area */}
-      <View style={styles.heroArea}>
-        <View
-          style={[
-            styles.iconCircle,
-            { backgroundColor: colors.muted, borderColor: colors.buttonPrimaryBorder },
-          ]}
-        >
-          <MaterialCommunityIcons
-            name="barcode-scan"
-            size={56}
-            color={colors.primary}
-          />
+    <SafeAreaView style={styles.safe}>
+      <View style={styles.container}>
+        <View style={styles.content}>
+          <Text style={styles.title}>قارئ رقم الشاصي</Text>
+          <Text style={styles.subtitle}>
+            استخراج رقم الشاصي من صور المركبات
+          </Text>
+        </View>
+
+        <View style={styles.buttons}>
+          <TouchableOpacity style={styles.primaryButton} activeOpacity={0.8}>
+            <Text style={styles.primaryButtonText}>التقاط صورة</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.secondaryButton} activeOpacity={0.8}>
+            <Text style={styles.secondaryButtonText}>
+              اختيار صورة من المعرض
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
-
-      {/* Title & subtitle */}
-      <View style={styles.textArea}>
-        <Text
-          style={[
-            styles.title,
-            { color: colors.foreground },
-          ]}
-        >
-          قارئ رقم الشاصي
-        </Text>
-        <Text
-          style={[
-            styles.subtitle,
-            { color: colors.subtitleText },
-          ]}
-        >
-          استخراج رقم الشاصي من صور المركبات
-        </Text>
-      </View>
-
-      {/* Buttons */}
-      <View style={styles.buttonsArea}>
-        <Pressable
-          style={({ pressed }) => [
-            styles.button,
-            styles.buttonPrimary,
-            {
-              backgroundColor: colors.buttonPrimary,
-              borderColor: colors.buttonPrimaryBorder,
-              opacity: pressed ? 0.82 : 1,
-              transform: [{ scale: pressed ? 0.975 : 1 }],
-            },
-          ]}
-          accessibilityRole="button"
-          accessibilityLabel="التقاط صورة"
-        >
-          <MaterialCommunityIcons
-            name="camera-outline"
-            size={22}
-            color="#FFFFFF"
-            style={styles.buttonIcon}
-          />
-          <Text style={[styles.buttonText, { color: '#FFFFFF' }]}>
-            التقاط صورة
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={({ pressed }) => [
-            styles.button,
-            styles.buttonSecondary,
-            {
-              backgroundColor: colors.buttonSecondary,
-              borderColor: colors.buttonSecondaryBorder,
-              opacity: pressed ? 0.82 : 1,
-              transform: [{ scale: pressed ? 0.975 : 1 }],
-            },
-          ]}
-          accessibilityRole="button"
-          accessibilityLabel="اختيار صورة من المعرض"
-        >
-          <MaterialCommunityIcons
-            name="image-outline"
-            size={22}
-            color={colors.accent}
-            style={styles.buttonIcon}
-          />
-          <Text style={[styles.buttonText, { color: colors.accent }]}>
-            اختيار صورة من المعرض
-          </Text>
-        </Pressable>
-      </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safe: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 28,
-  },
-  heroArea: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconCircle: {
-    width: 120,
-    height: 120,
-    borderRadius: 32,
-    borderWidth: 1.5,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  textArea: {
-    alignItems: 'center',
+    paddingHorizontal: 24,
     paddingBottom: 40,
-    gap: 10,
+    justifyContent: 'space-between',
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 12,
   },
   title: {
-    fontSize: 26,
-    fontFamily: 'Inter_700Bold',
+    fontSize: 28,
+    fontWeight: '700',
     textAlign: 'center',
+    color: '#111',
     writingDirection: 'rtl',
-    letterSpacing: 0.2,
   },
   subtitle: {
     fontSize: 15,
-    fontFamily: 'Inter_400Regular',
+    fontWeight: '400',
     textAlign: 'center',
+    color: '#666',
     writingDirection: 'rtl',
     lineHeight: 22,
-    paddingHorizontal: 8,
   },
-  buttonsArea: {
-    width: '100%',
-    gap: 14,
+  buttons: {
+    gap: 12,
   },
-  button: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    justifyContent: 'center',
+  primaryButton: {
+    backgroundColor: '#2563EB',
+    borderRadius: 12,
     paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 14,
-    borderWidth: 1.5,
-    gap: 10,
+    alignItems: 'center',
   },
-  buttonPrimary: {},
-  buttonSecondary: {},
-  buttonIcon: {},
-  buttonText: {
+  primaryButtonText: {
+    color: '#fff',
     fontSize: 17,
-    fontFamily: 'Inter_600SemiBold',
+    fontWeight: '600',
     writingDirection: 'rtl',
-    textAlign: 'center',
+  },
+  secondaryButton: {
+    backgroundColor: '#F1F5F9',
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  secondaryButtonText: {
+    color: '#2563EB',
+    fontSize: 17,
+    fontWeight: '600',
+    writingDirection: 'rtl',
   },
 });
