@@ -2,12 +2,43 @@ import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import {
   Alert,
-  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+async function openCamera() {
+  let permission;
+  try {
+    permission = await ImagePicker.requestCameraPermissionsAsync();
+  } catch {
+    Alert.alert('', 'تعذر التقاط الصورة');
+    return;
+  }
+
+  if (permission.status !== 'granted') {
+    Alert.alert('', 'يجب السماح باستخدام الكاميرا لالتقاط صورة');
+    return;
+  }
+
+  try {
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ['images'],
+      allowsEditing: false,
+      allowsMultipleSelection: false,
+      quality: 1,
+    });
+
+    if (result.canceled) return;
+
+    const uri = result.assets[0].uri;
+    router.push({ pathname: '/preview', params: { uri } });
+  } catch {
+    Alert.alert('', 'تعذر التقاط الصورة');
+  }
+}
 
 async function openGallery() {
   let permission;
@@ -25,7 +56,7 @@ async function openGallery() {
 
   try {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ['images'],
       allowsEditing: false,
       allowsMultipleSelection: false,
       quality: 1,
@@ -52,7 +83,11 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.buttons}>
-          <TouchableOpacity style={styles.primaryButton} activeOpacity={0.8}>
+          <TouchableOpacity
+            style={styles.primaryButton}
+            activeOpacity={0.8}
+            onPress={openCamera}
+          >
             <Text style={styles.primaryButtonText}>التقاط صورة</Text>
           </TouchableOpacity>
 
