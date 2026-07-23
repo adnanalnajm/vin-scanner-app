@@ -12,6 +12,13 @@ import {
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+function extractVin(text: string): string | null {
+  const normalized = text.toUpperCase().replace(/[^A-Z0-9]/g, ' ');
+  const matches = normalized.match(/\b[A-HJ-NPR-Z0-9]{17}\b/g);
+
+  return matches?.[0] ?? null;
+}
+
 export default function PreviewScreen() {
   const { uri } = useLocalSearchParams<{ uri: string }>();
   const imageUri = Array.isArray(uri) ? uri[0] : uri;
@@ -23,7 +30,12 @@ export default function PreviewScreen() {
     try {
       setIsProcessing(true);
       const result = await recognizeText(imageUri);
-      Alert.alert('النص المستخرج', result.text || 'لم يتم العثور على نص');
+      const vin = extractVin(result.text);
+
+      Alert.alert(
+        vin ? 'رقم الشاصي' : '',
+        vin || 'لم يتم العثور على رقم شاصي'
+      );
     } catch {
       Alert.alert('', 'تعذر استخراج النص من الصورة');
     } finally {
