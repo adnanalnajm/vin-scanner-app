@@ -1,5 +1,7 @@
+import { recognizeText } from '@infinitered/react-native-mlkit-text-recognition';
 import { router, useLocalSearchParams } from 'expo-router';
 import {
+  ActivityIndicator,
   Alert,
   Image,
   StyleSheet,
@@ -7,14 +9,26 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function PreviewScreen() {
   const { uri } = useLocalSearchParams<{ uri: string }>();
   const imageUri = Array.isArray(uri) ? uri[0] : uri;
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  function handleUseImage() {
-    Alert.alert('', 'سيتم استخراج رقم الشاصي في الخطوة القادمة');
+  async function handleUseImage() {
+    if (!imageUri || isProcessing) return;
+
+    try {
+      setIsProcessing(true);
+      const result = await recognizeText(imageUri);
+      Alert.alert('النص المستخرج', result.text || 'لم يتم العثور على نص');
+    } catch {
+      Alert.alert('', 'تعذر استخراج النص من الصورة');
+    } finally {
+      setIsProcessing(false);
+    }
   }
 
   function handlePickAnother() {
@@ -51,8 +65,13 @@ export default function PreviewScreen() {
           style={styles.primaryButton}
           activeOpacity={0.8}
           onPress={handleUseImage}
+          disabled={!imageUri || isProcessing}
         >
-          <Text style={styles.primaryButtonText}>استخدام هذه الصورة</Text>
+          {isProcessing ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.primaryButtonText}>استخدام هذه الصورة</Text>
+          )}
         </TouchableOpacity>
 
         <TouchableOpacity
