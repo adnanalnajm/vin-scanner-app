@@ -14,9 +14,12 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": false
+      "supportsTablet": false,
+      "bundleIdentifier": "com.anonymous.vinscannernative"
     },
-    "android": {},
+    "android": {
+      "package": "com.anonymous.vinscannernative"
+    },
     "web": {
       "favicon": "./assets/images/icon.png"
     },
